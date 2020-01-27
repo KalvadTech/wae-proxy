@@ -20,6 +20,7 @@ func clevercloud(c *gin.Context) {
 	if err != nil {
 		panic("could not establish connection with RabbitMQ:" + err.Error())
 	}
+	defer connection.Close()
 	secret := c.Param("secret")
 	waeProxySecret := os.Getenv("WAE_PROXY_SECRET")
 	if secret != waeProxySecret {
