@@ -2,9 +2,9 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/streadway/amqp"
 	"net/http"
 	"os"
-	"github.com/streadway/amqp"
 )
 
 func statping(c *gin.Context) {
@@ -15,6 +15,7 @@ func statping(c *gin.Context) {
 	if err != nil {
 		panic("could not establish connection with RabbitMQ:" + err.Error())
 	}
+	defer connection.Close()
 	secret := c.Param("secret")
 	waeProxySecret := os.Getenv("WAE_PROXY_SECRET")
 	if secret != waeProxySecret {
@@ -24,7 +25,7 @@ func statping(c *gin.Context) {
 
 	// Create a channel from the connection. We'll use channels to access the data in the queue rather than the connection itself.
 	channel, err := connection.Channel()
-	
+
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Could not Connect to RabbitMQ")
 		return

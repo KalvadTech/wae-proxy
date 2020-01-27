@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"os"
 	"github.com/streadway/amqp"
+	"os"
 )
 
 func main() {
@@ -14,15 +14,16 @@ func main() {
 	if err != nil {
 		panic("could not establish connection with RabbitMQ:" + err.Error())
 	}
+	defer connection.Close()
 	channel, err := connection.Channel()
 	defer channel.Close()
-        durable, exclusive := true, false
-        autoDelete, noWait := false, false
-        q, err := channel.QueueDeclare("wae-light", durable, autoDelete, exclusive, noWait, nil)
+	durable, exclusive := true, false
+	autoDelete, noWait := false, false
+	q, err := channel.QueueDeclare("wae-light", durable, autoDelete, exclusive, noWait, nil)
 	if err != nil {
 		panic("could not create queue in RabbitMQ:" + err.Error())
 	}
-        channel.QueueBind(q.Name, "#", "wae", false, nil)	
+	channel.QueueBind(q.Name, "#", "wae", false, nil)
 	router := gin.Default()
 	router.POST("/webhook/clevercloud/:secret", clevercloud)
 	router.POST("/webhook/statping/:secret", statping)

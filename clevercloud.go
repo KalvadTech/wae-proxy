@@ -1,15 +1,15 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/streadway/amqp"
 	"net/http"
 	"os"
-	"github.com/streadway/amqp"
-	"fmt"
 )
 
 type CleverCloudMessage struct {
-	Event     string `json:"event" binding:"required"`
+	Event string `json:"event" binding:"required"`
 }
 
 func clevercloud(c *gin.Context) {
@@ -34,7 +34,7 @@ func clevercloud(c *gin.Context) {
 
 	// Create a channel from the connection. We'll use channels to access the data in the queue rather than the connection itself.
 	channel, err := connection.Channel()
-	
+
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Could not Connect to RabbitMQ")
 		return
