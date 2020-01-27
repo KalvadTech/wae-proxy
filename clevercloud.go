@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"github.com/streadway/amqp"
+	"fmt"
 )
 
 type CleverCloudMessage struct {
@@ -38,6 +39,7 @@ func clevercloud(c *gin.Context) {
 		c.String(http.StatusInternalServerError, "Could not Connect to RabbitMQ")
 		return
 	}
+	fmt.Println(json.Event)
 	typeNotification := "info"
 	if json.Event == "DEPLOYMENT_SUCCESS" {
 		typeNotification = "success"
