@@ -25,5 +25,6 @@ func main() {
         channel.QueueBind(q.Name, "#", "wae", false, nil)	
 	router := gin.Default()
 	router.POST("/webhook/clevercloud/:secret", clevercloud)
+	router.POST("/webhook/statping/:secret", statping)
 	router.Run(":8080")
 }
